@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aviator Predictor</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+
+  <!-- Login Page -->
+  <div id="login-screen">
+    <h2>Login to Aviator</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p id="login-error"></p>
+  </div>
+
+  <!-- Splash Screen -->
+  <div id="splash-screen" style="display: none;">
+    <div class="splash">
+      <img src="splash.png" class="plane-img" />
+      <h1>Aviator Predictor</h1>
+      <p class="version">v4.0</p>
+    </div>
+  </div>
+
+  <!-- Home Screen -->
+  <div id="home-screen" style="display: none;">
+    <div class="header">
+      <h2>Aviator Predictor</h2>
+    </div>
+    <img src="homeplane.png" class="plane" />
+    <div class="circle-glow">
+      <div class="multiplier" id="multiplier">4.27x</div>
+    </div>
+    <button onclick="generateRandom()">Next</button>
+    <div class="footer">
+      <div class="icon">🏠</div>
+      <div class="timer">53:17</div>
+      <div class="icon">💬</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
