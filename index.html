@@ -2,51 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aviator UI Clone</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aviator Hack 100%</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="top-bar">
-    <div class="logo">Aviator</div>
-    <div class="balance">781030.15 INR</div>
-    <div class="menu">&#9776;</div>
+  <audio id="clickSound" src="click.mp3"></audio>
+  <audio id="bgMusic" src="bg-music.mp3" loop autoplay></audio>
+
+  <!-- Splash Screen -->
+  <div id="splashScreen" class="screen">
+    <div class="top-title">Aviator Hack 100%</div>
+    <img src="splash-plane.png" class="plane flying" alt="Plane"/>
+    <button onclick="goToPrediction()" class="btn">AVIATOR HACK 100%</button>
+    <button class="btn secondary">1XBET</button>
+    <p class="note">Our aviator hack only works on 1xbet!</p>
   </div>
 
-  <div class="multiplier-section">
-    <div class="plane-path"></div>
-    <div class="multiplier">7.57x</div>
-    <!-- History Section -->
-<div class="history-section">
-  <h3>Cash Out History</h3>
-  <ul id="history-list"></ul>
-</div>
-  </div>
+  <!-- Predictor Screen -->
+  <div id="predictorScreen" class="screen hidden">
+    <img src="predictor-plane.png" class="plane small flying" alt="Plane"/>
+    <h2>Aviator Predictor v4.0</h2>
+    <div id="multiplier">1.00x</div>
+    <button onclick="getPrediction()" class="btn">Get Signal</button>
+    <button class="btn secondary">Activate</button>
+    <p class="note">Join our telegram <a href="https://t.me/aviatorpredictorv4x0" target="_blank">here</a></p>
 
-  <div class="dm-text">DM ME FOR LOSS RECOVERY</div>
-
-  <div class="bet-box">
-    <div class="bet-header">
-      <span>Bet</span><span>Auto</span>
+    <div class="history-box">
+      <h4>Signal History:</h4>
+      <ul id="historyList"></ul>
     </div>
-    <div class="bet-amounts">
-      <button class="amount">200.00</button>
-    </div>
-    <button class="cash-out-btn" onclick="toggleButton(this)">CASH OUT<br><span>1514.00 INR</span></button>
-  </div>
-
-  <div class="bet-box">
-    <div class="bet-header">
-      <span>Bet</span><span>Auto</span>
-    </div>
-    <div class="bet-amounts">
-      <button class="amount">100.00</button>
-    </div>
-    <button class="cash-out-btn" onclick="toggleButton(this)">CASH OUT<br><span>757.00 INR</span></button>
-  </div>
-
-  <div class="footer-img">
-    <img src="https://i.imgur.com/O0QeDkC.png" alt="hacker-img" />
   </div>
 
   <script src="script.js"></script>
