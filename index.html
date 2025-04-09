@@ -1,89 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Aviator Home</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      background: #000;
-      color: white;
-      padding: 30px;
-    }
-    .glow-circle {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background-color: #fff;
-      box-shadow: 0 0 20px #ff0033, 0 0 40px #ff0033;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: bold;
-      margin: 30px auto;
-      color: #000;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 10px #ff0033; }
-      50% { box-shadow: 0 0 40px #ff0033; }
-      100% { box-shadow: 0 0 10px #ff0033; }
-    }
-    button {
-      background-color: #e91e63;
-      color: white;
-      padding: 10px 20px;
-      font-size: 18px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aviator UI Clone</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Aviator Predictor</h1>
-  <div class="glow-circle">
-    <span id="multiplier">--</span>
+  <div class="top-bar">
+    <div class="logo">Aviator</div>
+    <div class="balance">781030.15 INR</div>
+    <div class="menu">&#9776;</div>
   </div>
-  <button onclick="generateSignal()">Generate Signal</button>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+  <div class="multiplier-section">
+    <div class="plane-path"></div>
+    <div class="multiplier">7.57x</div>
+    <!-- History Section -->
+<div class="history-section">
+  <h3>Cash Out History</h3>
+  <ul id="history-list"></ul>
+</div>
+  </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAETHe_FcNSrHUAqeIgGlLchjhEWI44u0k",
-      authDomain: "aviatorbot-bcbdd.firebaseapp.com",
-      projectId: "aviatorbot-bcbdd",
-      storageBucket: "aviatorbot-bcbdd.appspot.com",
-      messagingSenderId: "116364075167",
-      appId: "1:116364075167:web:6be73837f5b8710678c2aa"
-    };
+  <div class="dm-text">DM ME FOR LOSS RECOVERY</div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  <div class="bet-box">
+    <div class="bet-header">
+      <span>Bet</span><span>Auto</span>
+    </div>
+    <div class="bet-amounts">
+      <button class="amount">200.00</button>
+    </div>
+    <button class="cash-out-btn" onclick="toggleButton(this)">CASH OUT<br><span>1514.00 INR</span></button>
+  </div>
 
-    // Signal generate and save
-    window.generateSignal = async function () {
-      const random = (Math.random() * (5 - 1) + 1).toFixed(2); // 1.00x to 5.00x
-      document.getElementById("multiplier").innerText = `${random}x`;
+  <div class="bet-box">
+    <div class="bet-header">
+      <span>Bet</span><span>Auto</span>
+    </div>
+    <div class="bet-amounts">
+      <button class="amount">100.00</button>
+    </div>
+    <button class="cash-out-btn" onclick="toggleButton(this)">CASH OUT<br><span>757.00 INR</span></button>
+  </div>
 
-      await addDoc(collection(db, "signals"), {
-        multiplier: `${random}x`,
-        createdAt: serverTimestamp()
-      });
-    };
+  <div class="footer-img">
+    <img src="https://i.imgur.com/O0QeDkC.png" alt="hacker-img" />
+  </div>
 
-    // Auth check
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-      }
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
