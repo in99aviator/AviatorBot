@@ -1,52 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Aviator Predictor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <title>Aviator Home</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #000;
+      color: white;
+      padding: 30px;
+    }
+    .glow-circle {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background-color: #fff;
+      box-shadow: 0 0 20px #ff0033, 0 0 40px #ff0033;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin: 30px auto;
+      color: #000;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #ff0033; }
+      50% { box-shadow: 0 0 40px #ff0033; }
+      100% { box-shadow: 0 0 10px #ff0033; }
+    }
+    button {
+      background-color: #e91e63;
+      color: white;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-
-<!-- Login Screen -->
-<div id="login-screen">
-  <h2>Login to Aviator</h2>
-<input type="email" id="email" placeholder="Email">
-<br>
-<input type="password" id="password" placeholder="Password">
-<br>
-<button id="loginBtn">Login</button>
-  <p id="login-error"></p>
-</div>
-  
-<!-- Splash Screen -->
-<div id="splash-screen" style="display:none;">
-  <div class="splash">
-    <img src="splash.png" class="plane-img">
-    <h1>Aviator Predictor</h1>
-    <p class="version">v4.0</p>
+  <h1>Aviator Predictor</h1>
+  <div class="glow-circle">
+    <span id="multiplier">--</span>
   </div>
-</div>
+  <button onclick="generateSignal()">Generate Signal</button>
 
-<!-- Home Screen -->
-<div id="home-screen" style="display:none;">
-  <h2>Aviator Predictor</h2>
-  <img src="homeplane.png" class="plane">
-  <div class="circle-glow">
-    <div id="multiplier">4.27x</div>
-  </div>
-  <button onclick="generateRandom()">Next</button>
-  <div class="footer">
-    <div>🏠</div>
-    <div>53:17</div>
-    <div>💬</div>
-  </div>
-</div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-<script src="script.js"></script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAETHe_FcNSrHUAqeIgGlLchjhEWI44u0k",
+      authDomain: "aviatorbot-bcbdd.firebaseapp.com",
+      projectId: "aviatorbot-bcbdd",
+      storageBucket: "aviatorbot-bcbdd.appspot.com",
+      messagingSenderId: "116364075167",
+      appId: "1:116364075167:web:6be73837f5b8710678c2aa"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Signal generate and save
+    window.generateSignal = async function () {
+      const random = (Math.random() * (5 - 1) + 1).toFixed(2); // 1.00x to 5.00x
+      document.getElementById("multiplier").innerText = `${random}x`;
+
+      await addDoc(collection(db, "signals"), {
+        multiplier: `${random}x`,
+        createdAt: serverTimestamp()
+      });
+    };
+
+    // Auth check
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      }
+    });
+  </script>
 </body>
 </html>
