@@ -1,13 +1,13 @@
 // Firebase Config (Replace with your real config)
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAETHe_FcNSrHUAqeIgGlLchjhEWI44u0k",
+  authDomain: "aviatorbot-bcbdd.firebaseapp.com",
+  projectId: "aviatorbot-bcbdd",
+  storageBucket: "aviatorbot-bcbdd.firebasestorage.app",
+  messagingSenderId: "116364075167",
+  appId: "1:116364075167:web:6be73837f5b8710678c2aa"
 };
-
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
