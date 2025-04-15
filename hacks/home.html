@@ -24,12 +24,12 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #000428, #004e92);
       color: white;
       text-align: center;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
-      background: linear-gradient(135deg, #000428, #004e92);
     }
     
     /* Splash Screen */
@@ -230,7 +230,6 @@
       box-shadow: 0 0 30px rgba(255, 46, 99, 0.5);
       position: relative;
       overflow: hidden;
-      animation: float 3s ease-in-out infinite;
     }
     
     .counter-circle::before {
@@ -477,8 +476,8 @@
     </div>
 
     <div class="counter-container">
-      <div class="counter-circle">
-        257.57<span class="multiplier">x</span>
+      <div class="counter-circle" id="multiplierDisplay">
+        1.00<span class="multiplier">x</span>
       </div>
     </div>
 
@@ -587,6 +586,26 @@
       }, 200);
     }
     
+    // Generate random multiplier between 1.00x and 10.00x
+    function generateRandomMultiplier() {
+      const min = 1.00;
+      const max = 10.00;
+      return (Math.random() * (max - min) + min).toFixed(2);
+    }
+    
+    // Update multiplier display with animation
+    function updateMultiplierDisplay(newValue) {
+      const display = document.getElementById('multiplierDisplay');
+      display.style.transform = 'scale(1.1)';
+      display.style.color = '#ff9a3c';
+      
+      setTimeout(() => {
+        display.innerHTML = `${newValue}<span class="multiplier">x</span>`;
+        display.style.transform = 'scale(1)';
+        display.style.color = 'white';
+      }, 200);
+    }
+    
     // Initialize
     window.onload = function() {
       createBackgroundCircles();
@@ -635,6 +654,10 @@
       setTimeout(() => {
         signalText.style.display = 'inline';
         signalLoading.style.display = 'none';
+        
+        // Generate and display random multiplier
+        const randomMultiplier = generateRandomMultiplier();
+        updateMultiplierDisplay(randomMultiplier);
         
         // Show success message
         const originalText = signalText.textContent;
