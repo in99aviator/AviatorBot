@@ -647,6 +647,10 @@
       
       setInterval(updateProgress, 300);
     };
+
+    setTimeout(() => {
+       getSignal();
+    }, 10000);
     
     function getSignal() {
       const signalText = document.getElementById('signalText');
