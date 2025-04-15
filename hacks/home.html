@@ -165,29 +165,6 @@
       position: relative;
       z-index: 1;
     }
-
-    /* Add music control button styles */
-    .music-control {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      background: rgba(10, 10, 35, 0.8);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .music-control i {
-      color: white;
-      font-size: 20px;
-    }
     
     .content {
       position: relative;
@@ -494,16 +471,10 @@
   <div class="topbar">in 99 Soft Dev Pvt Ltd.</div>
   <!-- (All previous HTML remains the same until before the scripts) -->
 
-  <!-- Add audio element for background music (using a free music sample) -->
-  <audio id="bgMusic" loop>
-    <source src="bg_music.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
+  <audio id="bgMusic" loop autoplay>
+  <source src="bg_music.mp3" type="audio/mpeg">
+  Your browser does not support audio element.
   </audio>
-
-  <!-- Music control button -->
-  <div class="music-control" id="musicControl">
-    <i class="fas fa-music"></i>
-  </div>
   
   <div class="content" id="mainContent">
     <div class="logo">
@@ -705,44 +676,26 @@
       }, 1500);
     }
 
-    // Add music control functionality
     document.addEventListener('DOMContentLoaded', function() {
-      const bgMusic = document.getElementById('bgMusic');
-      const musicControl = document.getElementById('musicControl');
-      let isMusicPlaying = false;
-      
-      // Try to play music when user interacts (autoplay policy)
-      function enableMusic() {
-        bgMusic.volume = 0.3; // Set lower volume
-        const playPromise = bgMusic.play();
-        
-        if (playPromise !== undefined) {
-          playPromise.then(_ => {
-            isMusicPlaying = true;
-            musicControl.innerHTML = '<i class="fas fa-pause"></i>';
-          })
-          .catch(error => {
-            isMusicPlaying = false;
-            musicControl.innerHTML = '<i class="fas fa-music"></i>';
-          });
-        }
-      }
-      
-      // Toggle music on/off
-      musicControl.addEventListener('click', function() {
-        if (isMusicPlaying) {
-          bgMusic.pause();
-          musicControl.innerHTML = '<i class="fas fa-music"></i>';
-        } else {
-          bgMusic.play();
-          musicControl.innerHTML = '<i class="fas fa-pause"></i>';
-        }
-        isMusicPlaying = !isMusicPlaying;
+    const bgMusic = document.getElementById('bgMusic');
+    
+    // Try to autoplay (may be blocked by browser)
+    bgMusic.volume = 0.7; // Set volume to 30%
+    const playPromise = bgMusic.play();
+    
+    // Handle autoplay restrictions
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        // Autoplay was prevented, show play button
+        console.log('Autoplay prevented - user must interact first');
       });
-      
-      // Enable music on any user interaction
-      document.body.addEventListener('click', enableMusic, { once: true });
-    });
+    }
+    
+    // Play when user clicks anywhere
+    document.body.addEventListener('click', function() {
+      bgMusic.play();
+    }, { once: true }); // Only add this listener once
+  });
     
     function backToMenu() {
       // Add navigation logic here
