@@ -677,25 +677,14 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-    const bgMusic = document.getElementById('bgMusic');
-    
-    // Try to autoplay (may be blocked by browser)
-    bgMusic.volume = 0.7; // Set volume to 30%
-    const playPromise = bgMusic.play();
-    
-    // Handle autoplay restrictions
-    if (playPromise !== undefined) {
-      playPromise.catch(error => {
-        // Autoplay was prevented, show play button
-        console.log('Autoplay prevented - user must interact first');
-      });
-    }
-    
-    // Play when user clicks anywhere
-    document.body.addEventListener('click', function() {
-      bgMusic.play();
-    }, { once: true }); // Only add this listener once
-  });
+    var audio = document.getElementById('bgMusic');
+  
+      // Most browsers require user interaction before playing audio
+      // So we'll wait for any user interaction first
+      document.body.addEventListener('click', function() {
+        audio.play().catch(e => console.log("Auto-play prevented:", e));
+      }, { once: true }); // Only need this once
+    });
     
     function backToMenu() {
       // Add navigation logic here
