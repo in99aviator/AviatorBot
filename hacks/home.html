@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aviator Signal Bot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #ff2e63;
+      --secondary: #08d9d6;
+      --dark: #0a0a23;
+      --darker: #000;
+      --light: #ffffff;
+      --accent: #ff9a3c;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      text-align: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      background: linear-gradient(135deg, #000428, #004e92);
+    }
+    
+    /* Splash Screen */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #000428, #004e92);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease-out;
+    }
+    
+    .splash-logo {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 30px;
+      animation: splashPulse 2s infinite alternate;
+    }
+    
+    @keyframes splashPulse {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.05);
+        opacity: 1;
+      }
+    }
+    
+    .splash-progress {
+      width: 200px;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 30px;
+    }
+    
+    .splash-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.3s ease;
+    }
+    
+    .splash-text {
+      margin-top: 20px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      animation: fadeInOut 2s infinite;
+    }
+    
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    
+    /* Animated Background Elements */
+    .background-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+    
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 46, 99, 0.05);
+      animation: float 15s infinite linear;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+    
+    /* Flying planes animation */
+    .plane {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2308d9d6"><path d="M22 16.21v-1.895L14 8V4a2 2 0 0 0-4 0v4l-8 6.315v1.895l8-2.526V18l-2 2v2l3.5-1 3.5 1v-2l-2-2v-4.316l8 2.526z"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation: fly 20s linear infinite;
+      opacity: 0;
+      z-index: 1;
+    }
+    
+    @keyframes fly {
+      0% {
+        transform: translateX(-100px) translateY(100px) rotate(10deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateX(calc(100vw + 100px)) translateY(-100px) rotate(10deg);
+        opacity: 0;
+      }
+    }
+    
+    /* UI Elements */
+    .topbar {
+      padding: 15px;
+      background: rgba(10, 10, 35, 0.8);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+      box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .content {
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease-out;
+    }
+    
+    .content.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .logo {
+      margin: 20px auto;
+      width: 120px;
+      height: 120px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      padding: 15px;
+      box-shadow: 0 0 30px rgba(255, 46, 99, 0.3);
+      border: 2px solid var(--primary);
+      animation: pulse 2s infinite alternate;
+    }
+    
+    @keyframes pulse {
+      from {
+        box-shadow: 0 0 20px rgba(255, 46, 99, 0.3);
+      }
+      to {
+        box-shadow: 0 0 40px rgba(255, 46, 99, 0.6);
+      }
+    }
+    
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    
+    .counter-container {
+      margin: 30px auto;
+      perspective: 500px;
+    }
+    
+    .counter-circle {
+      margin: 0 auto;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: rgba(10, 10, 35, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--light);
+      border: 5px solid var(--primary);
+      box-shadow: 0 0 30px rgba(255, 46, 99, 0.5);
+      position: relative;
+      overflow: hidden;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .counter-circle::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent,
+        transparent,
+        transparent,
+        rgba(255, 46, 99, 0.3),
+        transparent
+      );
+      transform: rotate(30deg);
+      animation: shine 3s infinite;
+    }
+    
+    @keyframes shine {
+      0% {
+        transform: rotate(30deg) translate(-30%, -30%);
+      }
+      100% {
+        transform: rotate(30deg) translate(30%, 30%);
+      }
+    }
+    
+    .multiplier {
+      font-size: 24px;
+      margin-left: 5px;
+      color: var(--accent);
+    }
+    
+    .timer-container {
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 50px;
+      width: 80%;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .timer-text {
+      font-size: 18px;
+      color: var(--light);
+      font-weight: 300;
+    }
+    
+    .time-left {
+      font-weight: 600;
+      color: var(--secondary);
+    }
+    
+    .progress-container {
+      width: 80%;
+      margin: 30px auto;
+    }
+    
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+    }
+    
+    .progress-fill {
+      width: 44%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 10px;
+      position: relative;
+      transition: width 0.5s ease;
+      animation: progressPulse 2s infinite;
+    }
+    
+    @keyframes progressPulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.8;
+      }
+    }
+    
+    .btn-container {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 50px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(145deg, var(--primary), #d60043);
+      z-index: 1;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(145deg, var(--dark), #1a1a3a);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+    }
+    
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #ff466e, #e0004f);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .btn-primary:hover::before {
+      opacity: 1;
+    }
+    
+    /* Animated dots for loading state */
+    .loading-dots {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .loading-dots span {
+      width: 8px;
+      height: 8px;
+      margin: 0 3px;
+      background-color: white;
+      border-radius: 50%;
+      display: inline-block;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+    
+    .loading-dots span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+    
+    .loading-dots span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+    
+    @keyframes bounce {
+      0%, 80%, 100% { 
+        transform: scale(0);
+      }
+      40% { 
+        transform: scale(1);
+      }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .counter-circle {
+        width: 170px;
+        height: 170px;
+        font-size: 36px;
+      }
+      
+      .timer-container {
+        width: 90%;
+      }
+      
+      .progress-container {
+        width: 90%;
+      }
+      
+      .splash-logo {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Splash Screen -->
+  <div class="splash-screen" id="splashScreen">
+    <div class="splash-logo">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#ff2e63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="#ff2e63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="#ff2e63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="splash-text">Loading Aviator Signal Bot</div>
+    <div class="splash-progress">
+      <div class="splash-progress-bar" id="splashProgress"></div>
+    </div>
+  </div>
+
+  <!-- Animated Background -->
+  <div class="background-animation" id="backgroundAnimation"></div>
+
+  <!-- Flying Planes -->
+  <div id="planesContainer"></div>
+
+  <!-- Main Content -->
+  <div class="topbar">in 99 Soft Dev Pvt Ltd.</div>
+  
+  <div class="content" id="mainContent">
+    <div class="logo">
+      <img src="https://i.ibb.co/sWT6Zy6/aviator-icon.png" alt="Aviator Logo">
+    </div>
+
+    <div class="counter-container">
+      <div class="counter-circle">
+        257.57<span class="multiplier">x</span>
+      </div>
+    </div>
+
+    <div class="timer-container">
+      <div class="timer-text">
+        Next signal in: <span class="time-left">44 seconds</span>
+      </div>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-label">
+        <span>Current Round</span>
+        <span>44%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="btn-container">
+      <button class="btn btn-primary" onclick="getSignal()">
+        <span id="signalText">GET SIGNAL</span>
+        <span id="signalLoading" class="loading-dots" style="display:none;">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+      <button class="btn btn-secondary" onclick="backToMenu()">Back to menu</button>
+    </div>
+  </div>
+
+  <script>
+    // Create floating circles for background
+    function createBackgroundCircles() {
+      const container = document.getElementById('backgroundAnimation');
+      const circleCount = 15;
+      
+      for (let i = 0; i < circleCount; i++) {
+        const circle = document.createElement('div');
+        circle.className = 'circle';
+        
+        // Random properties
+        const size = Math.random() * 100 + 50;
+        const posX = Math.random() * 100;
+        const delay = Math.random() * 15;
+        const duration = 10 + Math.random() * 20;
+        
+        circle.style.width = `${size}px`;
+        circle.style.height = `${size}px`;
+        circle.style.left = `${posX}%`;
+        circle.style.bottom = `-${size}px`;
+        circle.style.animationDuration = `${duration}s`;
+        circle.style.animationDelay = `${delay}s`;
+        
+        container.appendChild(circle);
+      }
+    }
+    
+    // Create flying planes
+    function createPlanes() {
+      const container = document.getElementById('planesContainer');
+      const planeCount = 5;
+      
+      for (let i = 0; i < planeCount; i++) {
+        const plane = document.createElement('div');
+        plane.className = 'plane';
+        
+        // Random properties
+        const size = 40 + Math.random() * 40;
+        const delay = Math.random() * 20;
+        const topPos = 10 + Math.random() * 80;
+        const duration = 15 + Math.random() * 15;
+        
+        plane.style.width = `${size}px`;
+        plane.style.height = `${size}px`;
+        plane.style.top = `${topPos}%`;
+        plane.style.animationDuration = `${duration}s`;
+        plane.style.animationDelay = `${delay}s`;
+        
+        container.appendChild(plane);
+      }
+    }
+    
+    // Simulate splash screen loading
+    function simulateLoading() {
+      const splashScreen = document.getElementById('splashScreen');
+      const progressBar = document.getElementById('splashProgress');
+      const mainContent = document.getElementById('mainContent');
+      
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          
+          // Hide splash screen and show main content
+          splashScreen.style.opacity = '0';
+          setTimeout(() => {
+            splashScreen.style.display = 'none';
+            mainContent.classList.add('show');
+          }, 500);
+        }
+        progressBar.style.width = `${progress}%`;
+      }, 200);
+    }
+    
+    // Initialize
+    window.onload = function() {
+      createBackgroundCircles();
+      createPlanes();
+      simulateLoading();
+      
+      // Simulate progress animation
+      let progress = 0;
+      const progressFill = document.querySelector('.progress-fill');
+      const timerElement = document.querySelector('.time-left');
+      
+      // Update progress bar and timer
+      function updateProgress() {
+        progress += 0.5;
+        if (progress > 100) progress = 0;
+        
+        progressFill.style.width = `${progress}%`;
+        document.querySelector('.progress-label span:last-child').textContent = `${Math.round(progress)}%`;
+        
+        // Update timer
+        const seconds = Math.round(60 - (progress * 0.6));
+        timerElement.textContent = `${seconds} seconds`;
+        
+        // Change color when close to end
+        if (seconds < 10) {
+          timerElement.style.color = 'var(--primary)';
+          progressFill.style.background = 'linear-gradient(90deg, var(--primary), #ff0)';
+        } else {
+          timerElement.style.color = 'var(--secondary)';
+          progressFill.style.background = 'linear-gradient(90deg, var(--primary), var(--accent))';
+        }
+      }
+      
+      setInterval(updateProgress, 300);
+    };
+    
+    function getSignal() {
+      const signalText = document.getElementById('signalText');
+      const signalLoading = document.getElementById('signalLoading');
+      
+      // Show loading state
+      signalText.style.display = 'none';
+      signalLoading.style.display = 'inline-flex';
+      
+      // Simulate API call
+      setTimeout(() => {
+        signalText.style.display = 'inline';
+        signalLoading.style.display = 'none';
+        
+        // Show success message
+        const originalText = signalText.textContent;
+        signalText.textContent = 'SIGNAL SENT!';
+        
+        // Reset after 2 seconds
+        setTimeout(() => {
+          signalText.textContent = originalText;
+        }, 2000);
+      }, 1500);
+    }
+    
+    function backToMenu() {
+      // Add navigation logic here
+      alert("Going back to menu!");
+    }
+  </script>
+</body>
+</html>
