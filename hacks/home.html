@@ -639,6 +639,9 @@
         if (seconds < 10) {
           timerElement.style.color = 'var(--primary)';
           progressFill.style.background = 'linear-gradient(90deg, var(--primary), #ff0)';
+          setTimeout(() => {
+            getSignal();
+          }, 10000);
         } else {
           timerElement.style.color = 'var(--secondary)';
           progressFill.style.background = 'linear-gradient(90deg, var(--primary), var(--accent))';
@@ -647,10 +650,6 @@
       
       setInterval(updateProgress, 300);
     };
-
-    setTimeout(() => {
-       getSignal();
-    }, 100000);
     
     function getSignal() {
       const signalText = document.getElementById('signalText');
