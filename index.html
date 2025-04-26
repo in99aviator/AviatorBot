@@ -4,7 +4,136 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Round Analysis</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #000;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 350px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .level, .sync {
+      font-size: 14px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 5px;
+      background: #333;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progress {
+      height: 5px;
+      width: 20%;
+      background: red;
+      transition: width 0.5s;
+    }
+
+    .round-content {
+      text-align: center;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .result {
+      font-size: 36px;
+      margin: 20px 0;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+
+    .right-btn, .wrong-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .right-btn {
+      background-color: green;
+      color: white;
+    }
+
+    .wrong-btn {
+      background-color: red;
+      color: white;
+    }
+
+    .run-btn {
+      padding: 12px 25px;
+      background-color: red;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* Dialog */
+    .dialog {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dialog-content {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      text-align: center;
+      color: black;
+    }
+
+    .dialog-content button {
+      margin-top: 15px;
+      padding: 8px 16px;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
@@ -38,6 +167,36 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+  function runAnalysis() {
+    const randomValue = (Math.random() * (20 - 1.1) + 1.1).toFixed(2);
+    document.getElementById('result').innerText = `${randomValue}x`;
+
+    // Update Progress
+    const progress = Math.min(Math.floor((randomValue / 20) * 100), 100);
+    document.getElementById('progress').style.width = `${progress}%`;
+    document.getElementById('sync').innerText = `${progress}%`;
+
+    // Level increase example
+    const level = Math.ceil(progress / 20);
+    document.getElementById('level').innerText = level;
+  }
+
+  function showFeedback(type) {
+    const dialog = document.getElementById('dialog');
+    const text = document.getElementById('dialog-text');
+    if(type === "Right") {
+      text.innerText = "Thanks for your positive feedback!";
+    } else {
+      text.innerText = "Thanks for your feedback, we'll improve!";
+    }
+    dialog.style.display = "flex";
+  }
+
+  function closeDialog() {
+    document.getElementById('dialog').style.display = "none";
+  }
+</script>
+
 </body>
 </html>
