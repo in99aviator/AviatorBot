@@ -1,40 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Aviator Hack 100%</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Round Analysis</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <audio id="clickSound" src="click.mp3"></audio>
-  <audio id="bgMusic" src="bg_music.mp3" loop autoplay></audio>
 
-  <!-- Splash Screen -->
-  <div id="splashScreen" class="screen">
-    <div class="top-title">Aviator Hack 100%</div>
-    <img src="splash-plane.png.JPG" class="plane flying" alt="Plane"/>
-    <button onclick="goToPrediction()" class="btn">AVIATOR HACK 100%</button>
-    <button class="btn secondary">1XBET</button>
-    <p class="note">Our aviator hack only works on 1xbet!</p>
+<div class="container">
+  <div class="top-bar">
+    <button class="menu-btn">Menu</button>
+    <div class="level">Level <span id="level">1</span></div>
+    <div class="sync">Sync <span id="sync">20%</span></div>
+  </div>
+  <div class="progress-bar">
+    <div class="progress" id="progress"></div>
   </div>
 
-  <!-- Predictor Screen -->
-  <div id="predictorScreen" class="screen hidden">
-    <img src="predictor-plane.png.WEBP" class="plane small flying" alt="Plane"/>
-    <h2>Aviator Predictor v4.0</h2>
-    <div id="multiplier">1.00x</div>
-    <button onclick="getPrediction()" class="btn">Get Signal</button>
-    <button class="btn secondary">Activate</button>
-    <p class="note">Join our telegram <a href="https://t.me/soft99dev" target="_blank">here</a></p>
-
-    
-  </div>
-  <div class="history-box">
-      <h4>Signal History:</h4>
-      <ul id="historyList"></ul>
+  <div class="round-content">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg" alt="Logo" class="logo">
+    <h2>Round studied</h2>
+    <div class="result" id="result">8.73x</div>
+    <div class="buttons">
+      <button class="right-btn" onclick="showFeedback('Right')">Right</button>
+      <button class="wrong-btn" onclick="showFeedback('Wrong')">Wrong</button>
     </div>
+    <button class="run-btn" onclick="runAnalysis()">Run Round analytics</button>
+  </div>
+</div>
 
-  <script src="script.js"></script>
+<!-- Feedback Dialog -->
+<div id="dialog" class="dialog">
+  <div class="dialog-content">
+    <p id="dialog-text"></p>
+    <button onclick="closeDialog()">OK</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
