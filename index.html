@@ -3,82 +3,210 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Round Analysis</title>
+  <title>Aviator Round Pro Analyzer</title>
 
+  <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <!-- Particles.js -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
   <style>
-    /* --- Styling (Same as your style, bas thoda spinner ke liye extra) --- */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       overflow: hidden;
-    }
-    .container {
-      width: 350px;
-      backdrop-filter: blur(15px);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.37);
-      animation: fadeIn 1s ease;
+      height: 100vh;
+      color: white;
       position: relative;
     }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 360px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 50px auto;
+      box-shadow: 0 0 20px rgba(0,255,255,0.2);
+      animation: fadeIn 1s ease;
+    }
+
     @keyframes fadeIn {
       from {opacity: 0; transform: scale(0.9);}
       to {opacity: 1; transform: scale(1);}
     }
-    .top-bar, .progress-bar, .round-content { margin-bottom: 15px; }
-    .progress-bar { height: 5px; background: rgba(255,255,255,0.2); border-radius: 5px; overflow: hidden; }
-    .progress { height: 5px; width: 20%; background: linear-gradient(90deg, red, orange, yellow, green, blue); animation: gradientAnimation 5s infinite; transition: width 0.5s; }
-    @keyframes gradientAnimation { 0%{background-position:0%} 50%{background-position:100%} 100%{background-position:0%} }
-    .logo { width: 80px; height: 80px; border-radius: 50%; background: white; padding: 10px; }
-    .result { font-size: 36px; margin: 20px 0; transition: transform 0.5s; }
-    .buttons { display: flex; justify-content: space-around; margin-bottom: 20px; }
-    .right-btn, .wrong-btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
-    .right-btn { background: rgba(0, 255, 0, 0.3); border: 1px solid green; }
-    .wrong-btn { background: rgba(255, 0, 0, 0.3); border: 1px solid red; }
-    .right-btn:hover, .wrong-btn:hover { transform: scale(1.05); }
-    .run-btn { width: 100%; padding: 12px 25px; background: rgba(255, 0, 0, 0.5); border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
-    .run-btn:hover { background: rgba(255, 0, 0, 0.8); transform: scale(1.05); }
-    .badge { background: linear-gradient(135deg, #ff416c, #ff4b2b); padding: 2px 6px; border-radius: 12px; font-size: 10px; position: absolute; top: -8px; right: -8px; font-weight: bold; box-shadow: 0 0 5px rgba(255,0,0,0.7); }
-    
-    /* Loader spinner */
-    .loader {
-      border: 4px solid rgba(255, 255, 255, 0.2);
-      border-top: 4px solid #fff;
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .level, .sync {
+      font-weight: bold;
+      animation: neon 2s infinite alternate;
+    }
+
+    @keyframes neon {
+      from {text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;}
+      to {text-shadow: 0 0 20px #0ff, 0 0 40px #0ff;}
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 5px;
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+      background-size: 300% 300%;
+      animation: move 5s linear infinite;
+      width: 0%;
+      transition: width 0.5s;
+    }
+
+    @keyframes move {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    .round-content {
+      text-align: center;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+      background: white;
+      border-radius: 50%;
+      padding: 10px;
+    }
+
+    .result {
+      font-size: 36px;
+      margin: 20px 0;
+      transition: transform 0.5s;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+
+    .right-btn, .wrong-btn {
+      position: relative;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+    }
+
+    .right-btn {
+      background: rgba(0, 255, 0, 0.3);
+      color: #00ff00;
+      border: 1px solid #00ff00;
+    }
+
+    .wrong-btn {
+      background: rgba(255, 0, 0, 0.3);
+      color: #ff4d4d;
+      border: 1px solid #ff4d4d;
+    }
+
+    .right-btn:hover, .wrong-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #0f0;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      padding: 2px 6px;
+      border-radius: 12px;
+      font-size: 10px;
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-weight: bold;
+      box-shadow: 0 0 5px #ff4b2b;
+    }
+
+    .run-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #ff416c, #ff4b2b);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .run-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #ff4b2b;
+    }
+
+    .spinner {
+      display: none;
+      margin: 10px auto;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #00ffff;
       border-radius: 50%;
       width: 30px;
       height: 30px;
       animation: spin 1s linear infinite;
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      display: none;
     }
+
     @keyframes spin {
       0% {transform: rotate(0deg);}
       100% {transform: rotate(360deg);}
     }
+
   </style>
 </head>
+
 <body>
 
-<div class="container">
-  <div class="loader" id="loader"></div>
+<div id="particles-js"></div>
 
+<div class="container">
   <div class="top-bar">
-    <button class="menu-btn">☰</button>
+    <button class="menu-btn" style="background:none; border:none; font-size:20px; color:white;">☰</button>
     <div class="level">Level <span id="level">1</span></div>
-    <div class="sync">Sync <span id="sync">20%</span></div>
+    <div class="sync">Sync <span id="sync">0%</span></div>
   </div>
 
   <div class="progress-bar">
@@ -104,122 +232,93 @@
     </div>
 
     <button class="run-btn" onclick="runAnalysis()">Run Round Analysis</button>
+    <div class="spinner" id="spinner"></div>
   </div>
 </div>
 
 <script>
-  const BIN_API = "https://api.jsonbin.io/v3/b/66534e0ce41b4d34e4fb89b1"; // Apna JSONBin API endpoint
-  const API_KEY = "YOUR_JSONBIN_SECRET_KEY"; // <-- Yaha apna JSONBin ka secret key daalna padega
+  let right = 0;
+  let wrong = 0;
 
-  const loader = document.getElementById('loader');
-
-  function showLoader(show) {
-    loader.style.display = show ? "block" : "none";
+  function showSpinner(show) {
+    document.getElementById('spinner').style.display = show ? 'block' : 'none';
   }
 
   function runAnalysis() {
     const randomValue = (Math.random() * (20 - 1.1) + 1.1).toFixed(2);
     document.getElementById('result').innerText = `${randomValue}x`;
-    document.getElementById('result').style.transform = 'scale(1.3)';
-    setTimeout(() => {
-      document.getElementById('result').style.transform = 'scale(1)';
-    }, 300);
+
+    const result = document.getElementById('result');
+    result.style.transform = 'scale(1.3)';
+    setTimeout(() => { result.style.transform = 'scale(1)'; }, 300);
+
     const progress = Math.min(Math.floor((randomValue / 20) * 100), 100);
     document.getElementById('progress').style.width = `${progress}%`;
     document.getElementById('sync').innerText = `${progress}%`;
+
     const level = Math.ceil(progress / 20);
     document.getElementById('level').innerText = level;
   }
 
-  async function updateFeedback(type) {
-    showLoader(true);
-    try {
-      const res = await fetch(BIN_API + "/latest", {
-        headers: { "X-Master-Key": API_KEY }
-      });
-      const bin = await res.json();
-      let right = bin.record.right;
-      let wrong = bin.record.wrong;
+  function updateCounts(type) {
+    showSpinner(true);
+    setTimeout(() => {
       if (type === "Right") right++;
       if (type === "Wrong") wrong++;
 
-      await fetch(BIN_API, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Master-Key": API_KEY
-        },
-        body: JSON.stringify({ right, wrong })
-      });
+      document.getElementById('right-count').innerText = right;
+      document.getElementById('wrong-count').innerText = wrong;
 
-      showToast(type + " feedback updated!");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      showLoader(false);
-      fetchCounts();
-    }
-  }
-
-  async function fetchCounts() {
-    showLoader(true);
-    try {
-      const res = await fetch(BIN_API + "/latest", {
-        headers: { "X-Master-Key": API_KEY }
-      });
-      const bin = await res.json();
-      document.getElementById('right-count').innerText = bin.record.right;
-      document.getElementById('wrong-count').innerText = bin.record.wrong;
-    } catch (error) {
-      console.error(error);
-    } finally {
-      showLoader(false);
-    }
+      showSpinner(false);
+    }, 500);
   }
 
   function showFeedback(type) {
-    updateFeedback(type);
+    updateCounts(type);
 
     Swal.fire({
-      title: type === "Right" ? "Awesome!" : "Noted!",
-      text: type === "Right" ? "Thanks for your positive feedback!" : "We will work on improvements!",
-      icon: type === "Right" ? "success" : "warning",
-      background: "#1f1f1f",
-      color: "#eee",
-      confirmButtonColor: "#3085d6",
-      timer: 2000,
-      timerProgressBar: true,
-      showClass: {
-        popup: 'animate__animated animate__fadeInDown'
-      },
-      hideClass: {
-        popup: 'animate__animated animate__fadeOutUp'
-      }
-    });
-  }
-
-  function showToast(message) {
-    const Toast = Swal.mixin({
       toast: true,
-      position: 'bottom-end',
+      position: 'top-end',
+      icon: type === "Right" ? 'success' : 'error',
+      title: type === "Right" ? 'Thanks for your support!' : 'Thanks, we will improve!',
       showConfirmButton: false,
-      timer: 1500,
-      background: '#333',
+      timer: 2000,
+      background: 'rgba(0,0,0,0.8)',
       color: '#fff',
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-      }
-    });
-    Toast.fire({
-      icon: 'success',
-      title: message
+      timerProgressBar: true
     });
   }
+</script>
 
-  fetchCounts();
-  setInterval(fetchCounts, 5000);
+<script>
+  particlesJS("particles-js", {
+    "particles": {
+      "number": {
+        "value": 50
+      },
+      "size": {
+        "value": 3
+      },
+      "move": {
+        "speed": 2
+      },
+      "line_linked": {
+        "enable": true,
+        "opacity": 0.2
+      },
+      "color": {
+        "value": ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"]
+      }
+    },
+    "interactivity": {
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "repulse"
+        }
+      }
+    }
+  });
 </script>
 
 </body>
