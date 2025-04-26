@@ -5,34 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Round Analysis</title>
 
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  <!-- FontAwesome for Like/Unlike icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-
-  <!-- Confetti JS -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background-color: #000;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
     }
 
     .container {
       width: 350px;
-      backdrop-filter: blur(10px);
-      background: rgba(255,255,255,0.05);
-      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
       padding: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.9);}
+      to {opacity: 1; transform: scale(1);}
     }
 
     .top-bar {
@@ -58,7 +63,7 @@
     .progress-bar {
       width: 100%;
       height: 5px;
-      background: #333;
+      background: rgba(255, 255, 255, 0.2);
       border-radius: 5px;
       overflow: hidden;
       margin-bottom: 20px;
@@ -67,8 +72,16 @@
     .progress {
       height: 5px;
       width: 20%;
-      background: red;
+      background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+      background-size: 400% 400%;
+      animation: gradientAnimation 5s ease infinite;
       transition: width 0.5s;
+    }
+
+    @keyframes gradientAnimation {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
 
     .round-content {
@@ -79,11 +92,15 @@
       width: 80px;
       height: 80px;
       margin-bottom: 10px;
+      border-radius: 50%;
+      background: white;
+      padding: 10px;
     }
 
     .result {
       font-size: 36px;
       margin: 20px 0;
+      transition: transform 0.5s;
     }
 
     .buttons {
@@ -93,48 +110,62 @@
     }
 
     .right-btn, .wrong-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
       padding: 10px 20px;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
-      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      transition: all 0.3s;
     }
 
     .right-btn {
-      background-color: green;
+      background: rgba(0, 255, 0, 0.3);
       color: white;
+      border: 1px solid green;
     }
 
     .wrong-btn {
-      background-color: red;
+      background: rgba(255, 0, 0, 0.3);
       color: white;
+      border: 1px solid red;
+    }
+
+    .right-btn:hover, .wrong-btn:hover {
+      transform: scale(1.05);
     }
 
     .run-btn {
       padding: 12px 25px;
-      background-color: red;
+      background: rgba(255, 0, 0, 0.5);
       border: none;
       border-radius: 8px;
       color: white;
       font-size: 16px;
       cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      transition: all 0.3s;
+    }
+
+    .run-btn:hover {
+      background: rgba(255, 0, 0, 0.8);
+      transform: scale(1.05);
     }
   </style>
-
 </head>
 <body>
 
 <div class="container">
   <div class="top-bar">
-    <button class="menu-btn">Menu</button>
+    <button class="menu-btn">☰</button>
     <div class="level">Level <span id="level">1</span></div>
     <div class="sync">Sync <span id="sync">20%</span></div>
   </div>
-  
+
   <div class="progress-bar">
     <div class="progress" id="progress"></div>
   </div>
@@ -146,10 +177,10 @@
 
     <div class="buttons">
       <button class="right-btn" onclick="showFeedback('Right')">
-        <i class="fas fa-thumbs-up"></i><span>Right</span>
+        <i class="fas fa-thumbs-up"></i> Right
       </button>
       <button class="wrong-btn" onclick="showFeedback('Wrong')">
-        <i class="fas fa-thumbs-down"></i><span>Wrong</span>
+        <i class="fas fa-thumbs-down"></i> Wrong
       </button>
     </div>
 
@@ -162,6 +193,13 @@
     const randomValue = (Math.random() * (20 - 1.1) + 1.1).toFixed(2);
     document.getElementById('result').innerText = `${randomValue}x`;
 
+    // Boom effect on number
+    const result = document.getElementById('result');
+    result.style.transform = 'scale(1.3)';
+    setTimeout(() => {
+      result.style.transform = 'scale(1)';
+    }, 300);
+
     // Update Progress
     const progress = Math.min(Math.floor((randomValue / 20) * 100), 100);
     document.getElementById('progress').style.width = `${progress}%`;
@@ -173,46 +211,37 @@
   }
 
   function showFeedback(type) {
-    let title = '';
-    let icon = '';
-    let color = '';
-
-    if(type === "Right") {
-      title = "Thanks for your positive feedback!";
-      icon = 'success';
-      color = 'green';
+    if (type === "Right") {
+      Swal.fire({
+        title: 'Thank You!',
+        text: 'Thanks for your positive feedback!',
+        icon: 'success',
+        background: 'rgba(255, 255, 255, 0.1)',
+        color: '#fff',
+        backdrop: `
+          rgba(0,0,0,0.7)
+          url('https://media.giphy.com/media/26tknCqiJrBQG6bxC/giphy.gif')
+          left top
+          no-repeat
+        `,
+        confirmButtonColor: '#00ff00'
+      });
     } else {
-      title = "Thanks for your feedback, we'll improve!";
-      icon = 'warning';
-      color = 'red';
+      Swal.fire({
+        title: 'Feedback Received!',
+        text: "Thanks for your feedback, we'll improve!",
+        icon: 'warning',
+        background: 'rgba(255, 255, 255, 0.1)',
+        color: '#fff',
+        backdrop: `
+          rgba(0,0,0,0.7)
+          url('https://media.giphy.com/media/26tknCqiJrBQG6bxC/giphy.gif')
+          left top
+          no-repeat
+        `,
+        confirmButtonColor: '#ff0000'
+      });
     }
-
-    // Show SweetAlert2 Glassmorphism Popup
-    Swal.fire({
-      title: title,
-      icon: icon,
-      background: 'rgba(255,255,255,0.1)',
-      backdrop: `
-        rgba(0,0,0,0.7)
-        left top
-        no-repeat
-      `,
-      confirmButtonColor: color,
-      color: '#fff',
-      showClass: {
-        popup: 'animate__animated animate__fadeInDown'
-      },
-      hideClass: {
-        popup: 'animate__animated animate__fadeOutUp'
-      }
-    });
-
-    // Confetti Animation
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
   }
 </script>
 
