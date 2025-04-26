@@ -33,6 +33,7 @@
       padding: 20px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.37);
       animation: fadeIn 1s ease;
+      position: relative;
     }
 
     @keyframes fadeIn {
@@ -123,20 +124,18 @@
     }
 
     .badge {
-    background: red;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 12px;
-    font-size: 10px;
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    font-weight: bold;
-    background: linear-gradient(135deg, #ff416c, #ff4b2b);
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
-  }
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 12px;
+      font-size: 10px;
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-weight: bold;
+      box-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+    }
 
-    
     .right-btn {
       background: rgba(0, 255, 0, 0.3);
       color: white;
@@ -170,11 +169,41 @@
       background: rgba(255, 0, 0, 0.8);
       transform: scale(1.05);
     }
+
+    .spinner-overlay {
+      position: absolute;
+      background: rgba(0,0,0,0.6);
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      display: none;
+      z-index: 10;
+      border-radius: 15px;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid #ffffff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
+  <div class="spinner-overlay" id="spinner">
+    <div class="spinner"></div>
+  </div>
+
   <div class="top-bar">
     <button class="menu-btn">☰</button>
     <div class="level">Level <span id="level">1</span></div>
@@ -191,28 +220,98 @@
     <div class="result" id="result">8.73x</div>
 
     <div class="buttons">
-  <div style="position: relative;">
-    <button class="right-btn" onclick="showFeedback('Right')">
-      <i class="fas fa-thumbs-up"></i> Right <span id="right-count" class="badge">0</span>
-    </button>
-  </div>
-  
-  <div style="position: relative;">
-    <button class="wrong-btn" onclick="showFeedback('Wrong')">
-      <i class="fas fa-thumbs-down"></i> Wrong <span id="wrong-count" class="badge">0</span>
-    </button>
-  </div>
-</div>
+      <div style="position: relative;">
+        <button class="right-btn" onclick="showFeedback('Right')">
+          <i class="fas fa-thumbs-up"></i> Right <span id="right-count" class="badge">0</span>
+        </button>
+      </div>
+      
+      <div style="position: relative;">
+        <button class="wrong-btn" onclick="showFeedback('Wrong')">
+          <i class="fas fa-thumbs-down"></i> Wrong <span id="wrong-count" class="badge">0</span>
+        </button>
+      </div>
+    </div>
 
     <button class="run-btn" onclick="runAnalysis()">Run Round Analysis</button>
   </div>
 </div>
 
-<!-- Iske andar script ke niche yeh SheetDB related code add karo -->
-
 <script>
-  const SHEETDB_API = "https://sheetdb.io/api/v1/ptvv5mfhv9q34"; // <-- apna sheetdb link daalo
-  
+  const JSONBIN_API_KEY = "$2a$10$3O9QEMcw8sJVTs2cGA.RCeRN4b3veRs8xkSsLnZ1Xjh0Mpj9Jc8qG"; // <-- Apna API key daalo
+  const BIN_ID = "680cebb68a456b796691e2ac"; // <-- Apna bin ID daalo
+  const spinner = document.getElementById('spinner');
+
+  async function fetchCounts() {
+    try {
+      spinner.style.display = 'flex';
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+        headers: {
+          "X-Master-Key": JSONBIN_API_KEY
+        }
+      });
+      const data = await res.json();
+      document.getElementById('right-count').innerText = data.record.right;
+      document.getElementById('wrong-count').innerText = data.record.wrong;
+    } catch (err) {
+      console.error('Fetch Error:', err);
+    } finally {
+      spinner.style.display = 'none';
+    }
+  }
+
+  async function updateFeedback(type) {
+    try {
+      spinner.style.display = 'flex';
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+        headers: {
+          "X-Master-Key": JSONBIN_API_KEY
+        }
+      });
+      const data = await res.json();
+      let right = data.record.right;
+      let wrong = data.record.wrong;
+
+      if (type === "Right") right++;
+      if (type === "Wrong") wrong++;
+
+      await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Master-Key": JSONBIN_API_KEY
+        },
+        body: JSON.stringify({
+          right: right,
+          wrong: wrong
+        })
+      });
+    } catch (err) {
+      console.error('Update Error:', err);
+    } finally {
+      spinner.style.display = 'none';
+    }
+  }
+
+  function showFeedback(type) {
+    updateFeedback(type).then(fetchCounts);
+
+    Swal.fire({
+      title: type === "Right" ? 'Awesome!' : 'Thank You!',
+      html: `<strong style="color:yellow;">${type === "Right" ? 'Keep It Up!' : 'We will improve!'}</strong>`,
+      icon: type === "Right" ? 'success' : 'warning',
+      background: '#1e1e2f',
+      color: '#fff',
+      backdrop: `
+        rgba(0,0,0,0.9)
+        url('https://i.gifer.com/7efs.gif')
+        center
+        no-repeat
+      `,
+      confirmButtonColor: type === "Right" ? '#00ff00' : '#ff0040'
+    });
+  }
+
   function runAnalysis() {
     const randomValue = (Math.random() * (20 - 1.1) + 1.1).toFixed(2);
     document.getElementById('result').innerText = `${randomValue}x`;
@@ -229,60 +328,6 @@
 
     const level = Math.ceil(progress / 20);
     document.getElementById('level').innerText = level;
-  }
-
-  async function updateFeedback(type) {
-    try {
-      const res = await fetch(SHEETDB_API + "/search?id=1");
-      const data = await res.json();
-      let right = parseInt(data[0].right);
-      let wrong = parseInt(data[0].wrong);
-
-      if (type === "Right") right += 1;
-      if (type === "Wrong") wrong += 1;
-
-      await fetch(SHEETDB_API + "/id/1", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ data: { right: right, wrong: wrong } })
-      });
-    } catch (error) {
-      console.error('Update Error:', error);
-    }
-  }
-
-  async function fetchCounts() {
-    try {
-      const response = await fetch(SHEETDB_API + "/search?id=1");
-      const data = await response.json();
-      if (data.length > 0) {
-        document.getElementById('right-count').innerText = data[0].right;
-        document.getElementById('wrong-count').innerText = data[0].wrong;
-      }
-    } catch (error) {
-      console.error('Fetch Error:', error);
-    }
-  }
-
-  function showFeedback(type) {
-    updateFeedback(type).then(fetchCounts);
-
-    Swal.fire({
-      title: type === "Right" ? 'Thank You!' : 'Feedback Received!',
-      text: type === "Right" ? 'Thanks for your positive feedback!' : "Thanks for your feedback, we'll improve!",
-      icon: type === "Right" ? 'success' : 'warning',
-      background: 'rgba(255, 255, 255, 0.1)',
-      color: '#fff',
-      backdrop: `
-        rgba(0,0,0,0.7)
-        url('https://media.giphy.com/media/26tknCqiJrBQG6bxC/giphy.gif')
-        left top
-        no-repeat
-      `,
-      confirmButtonColor: type === "Right" ? '#00ff00' : '#ff0000'
-    });
   }
 
   // Initial load + auto refresh every 5 seconds
