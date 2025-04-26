@@ -188,7 +188,53 @@
   </div>
 </div>
 
+<!-- Iske andar script ke niche yeh SheetDB related code add karo -->
+
 <script>
+  const SHEETDB_API = "https://sheetdb.io/api/v1/YOUR_SHEETDB_ID"; // <-- apna sheetdb link daalo
+  
+  async function updateFeedback(type) {
+    try {
+      // 1. Get existing data
+      const response = await fetch(SHEETDB_API);
+      const data = await response.json();
+
+      if (!data || data.length === 0) {
+        console.error("SheetDB data not found!");
+        return;
+      }
+
+      let currentRight = parseInt(data[0].right) || 0;
+      let currentWrong = parseInt(data[0].wrong) || 0;
+
+      // 2. Update counter
+      if (type === 'Right') {
+        currentRight += 1;
+      } else {
+        currentWrong += 1;
+      }
+
+      // 3. Send updated data
+      await fetch(SHEETDB_API + '/id/1', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          data: {
+            right: currentRight,
+            wrong: currentWrong
+          }
+        })
+      });
+
+      console.log('Feedback updated successfully!');
+
+    } catch (error) {
+      console.error('Error updating feedback:', error);
+    }
+  }
+
   function runAnalysis() {
     const randomValue = (Math.random() * (20 - 1.1) + 1.1).toFixed(2);
     document.getElementById('result').innerText = `${randomValue}x`;
@@ -211,6 +257,9 @@
   }
 
   function showFeedback(type) {
+    // SheetDB update call
+    updateFeedback(type);
+
     if (type === "Right") {
       Swal.fire({
         title: 'Thank You!',
