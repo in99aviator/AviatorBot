@@ -171,9 +171,9 @@
   </div>
 
   <div class="round-content">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg" alt="Logo" class="logo">
+    <img src="Assets/Aviator.png" alt="Logo" class="logo">
     <h2>Aviator Studio</h2>
-    <div class="result" id="result">8.73x</div>
+    <div class="result" id="result">1.01x</div>
 
     <div class="buttons">
       <button class="right-btn" onclick="showFeedback('Right')">
@@ -190,7 +190,7 @@
 
 <script>
   function runAnalysis() {
-    const randomValue = (Math.random() * (20 - 1.1) + 1.1).toFixed(2);
+    const randomValue = (Math.random() * (50 - 1.1) + 1.1).toFixed(2);
     document.getElementById('result').innerText = `${randomValue}x`;
 
     // Boom effect on number
@@ -201,7 +201,7 @@
     }, 300);
 
     // Update Progress
-    const progress = Math.min(Math.floor((randomValue / 20) * 100), 100);
+    const progress = Math.min(Math.floor((randomValue / 50) * 100), 100);
     document.getElementById('progress').style.width = `${progress}%`;
     document.getElementById('sync').innerText = `${progress}%`;
 
