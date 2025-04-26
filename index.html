@@ -37,26 +37,11 @@
       backdrop-filter: blur(15px);
       animation: fadeIn 1s ease;
       box-shadow: 0 0 25px rgba(0,255,255,0.2);
-
-      /* Rainbow border */
-      border: 3px solid transparent;
-      background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)),
-        linear-gradient(135deg, #ff00c8, #00ffff, #fffb00, #ff00c8);
-      background-origin: border-box;
-      background-clip: content-box, border-box;
-      animation: borderAnimation 6s linear infinite;
     }
 
     @keyframes fadeIn {
       from {opacity: 0; transform: scale(0.9);}
       to {opacity: 1; transform: scale(1);}
-    }
-
-    @keyframes borderAnimation {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
     }
 
     .top-bar {
